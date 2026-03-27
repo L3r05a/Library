@@ -1,6 +1,9 @@
 //Library Array
 const myLibrary = [];
 
+//book counter
+const counter = document.querySelector('.counter')
+
 //main container
 const container = document.querySelector('.container');
 const con1 = document.createElement('div');
@@ -11,7 +14,6 @@ const con2 = document.createElement('div');
 con2.classList.add('con2');
 container.appendChild(con2);
 
-
 //Addbook button
 const addBook = document.querySelector('button');
 addBook.textContent = ('Add Book');
@@ -19,7 +21,13 @@ addBook.textContent = ('Add Book');
 //AddBook form instancing logic
 addBook.addEventListener('click', () => {
     
+    //if a newbook form already exists, return
+    if(document.getElementsByClassName('formContainer').length !=0 ){
+        
+        return
 
+    };
+        
     //form container DOM
     const formContainer = document.createElement('div');
     formContainer.classList.add('formContainer')
@@ -91,6 +99,7 @@ addBook.addEventListener('click', () => {
     submit.textContent = 'Submit New Book';
     submit.classList.add('submit');
     newBookForm.appendChild(submit);
+    
 
             //Submit button logic
             submit.addEventListener('click', (event) => {
@@ -112,17 +121,56 @@ addBook.addEventListener('click', () => {
                 verifyBook (newTitle, newAuthor, newPages, newYear, newRead);
 
                 //removes form after submit
-                newBookForm.remove();
+                formContainer.remove();
                 
             })
     
     formContainer.appendChild(newBookForm);
 })
 
-// //sample book
-const hobbit = verifyBook ('The Hobbit', 'J.R.R. Tolkien', 950, 1933, true);
+//Book Constructor
+class Book {
 
-const neuromancer = verifyBook ('Neuromancer', 'William Gibson', 350, 1984, true);
+    static count = 0;
+    #read;
+
+    constructor (title, author, pages, year, read) {
+
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.year = year;
+    this.#read = read;
+    this.id = self.crypto.randomUUID()
+    Book.count++;
+
+    }
+
+    toggleRead (newValue) {
+        this.#read = newValue;
+    }
+
+    static totalCount() {
+       return  counter.textContent=(`You have ${Book.count} books.`)
+        
+    }
+    
+    static decreaseCount () {
+        return Book.count--;
+    }
+
+    get readStatus(){
+        return this.#read;
+    }
+}
+
+// //sample book
+verifyBook ('The Hobbit', 'J.R.R. Tolkien', 950, 1933, true);
+
+verifyBook ('Neuromancer', 'William Gibson', 350, 1984, true);
+
+
+
 
 //Validation
 
@@ -146,27 +194,11 @@ function verifyBook(title, author, pages, year, read){
 
     //pushes a reference of same object to UI renderer 
     renderOneBook(newBook);
+
+    // call book counter
+    Book.totalCount();
    
 };
-
-
-
-//Book Constructor
-function Book (title, author, pages, year, read) {
-
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.year = year;
-    this.read = read;
-    this.id = self.crypto.randomUUID()
-
-}
-
-//protoype method to update book based on UI interaction
-Book.prototype.toggleRead = function(newValue){
-    this.read = newValue;
-}
 
   //Single book card UI render logic
     function renderOneBook (book) {
@@ -214,11 +246,12 @@ Book.prototype.toggleRead = function(newValue){
                 bookRead.setAttribute('name', 'read_label')
             
                 //Checkbox state property
-                bookRead.checked = book.read; 
+                bookRead.checked = book.readStatus; 
 
                 bookRead.addEventListener('change', () =>{
                     // book.read = bookRead.checked;
                     book.toggleRead(bookRead.checked)
+                    // console.log(bookRead.checked)
                     
                 })
 
@@ -226,19 +259,26 @@ Book.prototype.toggleRead = function(newValue){
                 
                 //remove button
                 const removeButton = document.createElement('button');
+                removeButton.classList.add('remove')
                 removeButton.textContent='Remove';
 
                 //remove logic
                 removeButton.addEventListener('click', ()=> {
 
-                //  console.log(newCard.dataset.id);
+                //finds index of book instance
                  
                  const index = myLibrary.findIndex(book =>
                     
                     book.id === newCard.dataset.id);
-                    
+
+                //if legit remove from array
                 if (index !== -1) {
                     myLibrary.splice(index, 1);
+
+                    //decrease counter
+                    Book.decreaseCount();
+                    //call counter
+                    Book.totalCount();
                 }
 
                 newCard.remove();

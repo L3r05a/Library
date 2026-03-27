@@ -1,111 +1,151 @@
-* {
+ * {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
-    ;
-    background-color: rgb(85, 105, 196);
-    color: white;
+}
+:root {
+--bg-main: rgb(85, 105, 196);
+--bg-buttons:  rgb(146, 146, 187);
+--txShadow: 3px 3px 1px rgb(57, 87, 126);
+--font-base: 1em ;
+--font-sm: small;
+--font-xsm: smaller;
+--font-lg: large;
+--font-xlg: 2rem;
+}
+body {
+color: white;
+margin: 0;
+box-sizing: border-box;
+}
+.banner {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+background-color: var(--bg-main);
+}
+.counter {
+font-size: var(--font-base);
+}
+.library, 
+.counter, 
+.addBook, 
+.submit {
+text-shadow: var(--txShadow)
+}
+.library {
+font-size: var(--font-xlg);
+margin: 2rem;
+}
+.counter {
+color: bisque;
+}
+.addBook {
+margin: 1.3rem;
+padding: 20px;
+width: 10rem;
+font-size: var(--font-lg);
+color: white;
+background-color:var(--bg-buttons);
+font-weight: bolder;
+border: none;
+border-radius: 10px;
+cursor: pointer;
+}
+.addBook, .remove, .submit {
+transition: .5s;
+}
+.addBook:hover, .remove:hover, .submit:hover {
+background-color: rgb(110, 110, 150);
+}
+.container {
+min-height: 100vh;
+display: grid;
+grid-template-areas: "cards form";
+grid-template-columns:minmax(15rem, 1fr) 25em;
+background-color: var(--bg-main);
+
+}
+.con1 {
+grid-area: cards;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+align-content: start;
+align-self: start;
+overflow-y: auto;
+
+}
+
+.con2{
+    grid-area: form;
+    align-self: start;
    
 }
 
-.library {
-    font-size: 2rem;
-    display: flex;
-    justify-content: center;
-    
-}
-
-.banner {
-    display: flex;
-    justify-content: center;
-}
-
-.addBook {
-    margin: 1.3rem;
-    background-color: rgb(146, 146, 187);
-    padding: 20px;
-    color: white;
-    cursor: pointer;
-    border: none;
-}
-
-.container {
-    display: grid;
-    
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr auto;
- 
-}
-
-.con1 {
-    display: grid;
-    
-    grid-template-columns: 1fr ;
-    grid-template-rows: auto;
-}
-
-
-
 .newCard {
-    margin: 1.3rem;
-    padding: 5px;
-    
-    
-}
-
-.bookTitle {
-    font-weight: bold;
-}
-
-.bookAuthor {
-
-    font-weight: initial;
-    font-size: small;
-}
-
-.bookPages {
-    font-size: small;
-}
-
-.bookYear {
-    font-size: smaller;
+margin: 1rem;
+padding: 10px;
+box-shadow: 3px 3px 4px 5px rgb(45, 75, 136);
+border-radius: 10px; 
+height: fit-content;
 }
 
 .formContainer {
+margin: 1.3rem;
 
-    margin: 1.3rem;
-    grid-column-start: 3;
-    grid-row-start: 1;
 
+}
+.remove {
+color: white;
+background-color: var(--bg-buttons);
+border-radius: 5px;
+cursor: pointer;
+}
+.bookTitle {
+font-weight: bold;
+}
+.bookAuthor {
+font-weight: initial;
+font-size: var(--font-sm);
+}
+.bookPages {
+font-size: var(--font-xsm);
+}
+.bookYear {
+font-size: var(--font-xsm);
 }
 
 input, label {
-    display:block;
-
-   
+display:block;
 }
-
 input {
-    
-border: 1px solid;
+margin: 5px 0 15px;
+}
+input {
+outline: 1px solid white;
+outline-offset: 2px;
+border-radius: 4px;
 background-color:  rgb(146, 146, 187);
- color: white;
-
+color: white;
+font-size: var(--font-lg);
+padding: 10px;
+transition: 1s;
 }
-
+input:focus {
+background-color:  rgb(110, 110, 150) ;
+}
 .submit {
-    margin-top: 1.3rem;
-    background-color: rgb(146, 146, 187);
-    padding: 10px;
-    color: white;
-    cursor: pointer;
-    border: none;
+margin-top: 1.3rem;
+background-color: rgb(146, 146, 187);
+padding: 10px;
+color: white;
+cursor: pointer;
+border: none;
+font-weight: bold;
+border-radius: 10px;
 }
-
 .bookPages::before {
-
-    content: 'Pages: '
-
+content: 'Pages: '
 }
-
 .bookYear::before {
-    content: 'Published: '
+content: 'Published: '
 }
