@@ -6,19 +6,19 @@ const counter = document.querySelector('.counter')
 
 //main container
 const container = document.querySelector('.container');
-const con1 = document.createElement('div');
-con1.classList.add('con1');
-container.appendChild(con1);
+const cardsContainer = document.createElement('div');
+cardsContainer.classList.add('cardsContainer');
+container.appendChild(cardsContainer);
 
-const con2 = document.createElement('div');
-con2.classList.add('con2');
-container.appendChild(con2);
+const formPanel = document.createElement('div');
+formPanel.classList.add('formPanel');
+container.appendChild(formPanel);
 
 //Addbook button
 const addBook = document.querySelector('button');
 addBook.textContent = ('Add Book');
 
-//AddBook form instancing logic
+//New book form  
 addBook.addEventListener('click', () => {
     
     //if a newbook form already exists, return
@@ -31,33 +31,63 @@ addBook.addEventListener('click', () => {
     //form container DOM
     const formContainer = document.createElement('div');
     formContainer.classList.add('formContainer')
-    con2.appendChild(formContainer);
+    formPanel.appendChild(formContainer);
 
     //form DOM
     const newBookForm = document.createElement('form');
+    newBookForm.setAttribute('novalidate', 'true');
     
     //title label+input
     const labelTitle = document.createElement('label');
     labelTitle.setAttribute('for', 'book_title');
-    labelTitle.textContent= 'Book Title:';
+    labelTitle.textContent= '*Book Title:';
     newBookForm.appendChild(labelTitle);
 
     const titleInput = document.createElement('input');
     titleInput.setAttribute('type', 'text');
     titleInput.setAttribute('id', 'book_title');
+    titleInput.setAttribute('required', 'true');
+    titleInput.setAttribute('minlength', '1');
+
     newBookForm.appendChild(titleInput);
 
+    
+    function validateTitle() {
+
+    if (titleInput.validity.valueMissing) {
+        titleInput.setCustomValidity("Enter a book title");
+    } else {
+        titleInput.setCustomValidity("");
+    }
+
+};
+    //Validates title if user enters input
+    titleInput.addEventListener('input', (validateTitle));
+        
     //author label+input
     const labelAuthor = document.createElement('label');
     labelAuthor.setAttribute('for', 'book_author');
-    labelAuthor.textContent= 'Book Author:';
+    labelAuthor.textContent= '*Book Author:';
     newBookForm.appendChild(labelAuthor);
+
 
     const authorInput = document.createElement('input');
     authorInput.setAttribute('type', 'text');
     authorInput.setAttribute('id', 'book_author');
+    authorInput.setAttribute('required', 'true');
+    authorInput.setAttribute('minlength', '1');
     newBookForm.appendChild(authorInput);
 
+    function validateAuthor() {
+     if (authorInput.validity.valueMissing) {
+        authorInput.setCustomValidity("Enter author's name");
+        } else {
+        authorInput.setCustomValidity('');
+    }};
+
+    //Validates author if user enters input
+    authorInput.addEventListener('input', (validateAuthor));    
+    
     //pages label+input
     const labelPages = document.createElement('label');
     labelPages.setAttribute('for', 'book_pages');
@@ -67,18 +97,31 @@ addBook.addEventListener('click', () => {
     const pagesInput = document.createElement('input');
     pagesInput.setAttribute('type', 'number');
     pagesInput.setAttribute('id', 'book_pages');
-    newBookForm.appendChild(pagesInput);
+        newBookForm.appendChild(pagesInput);
 
     //year label+input
     const labelYear = document.createElement('label');
     labelYear.setAttribute('for', 'book_year');
-    labelYear.textContent= 'Year of publication:';
+    labelYear.textContent= '*Year of publication:';
     newBookForm.appendChild(labelYear);
 
     const yearInput = document.createElement('input');
     yearInput.setAttribute('type', 'number');
     yearInput.setAttribute('id', 'book_year');
+    yearInput.setAttribute('required', 'true');
     newBookForm.appendChild(yearInput);
+
+    function validateYear() {
+     if (yearInput.validity.valueMissing) {
+        yearInput.setCustomValidity("Enter publication date");
+        } else {
+        yearInput.setCustomValidity('');
+    }};
+
+    //Validates year if user enters input
+    yearInput.addEventListener('input', (validateYear)); 
+
+
 
     //Read label
     const labelRead = document.createElement('label');
@@ -101,28 +144,42 @@ addBook.addEventListener('click', () => {
     newBookForm.appendChild(submit);
     
 
+//validates title if user did not input anything
+validateTitle();
+//validates author if user did not input anything
+validateAuthor();
+//validates year if user did not input anything
+validateYear();
+
+function capitalizeFirstLetter(string)  {
+  return [...string][0].toUpperCase() + [...string].slice(1).join('')
+};
+
             //Submit button logic
-            submit.addEventListener('click', (event) => {
-                event.preventDefault();
-                
+            newBookForm.addEventListener('submit', (event) => {
+                event.preventDefault();            
+            
+            if (!newBookForm.reportValidity()){
+                return 
+            } else {
+
                 //UI field values
-                const newTitle = document.getElementById('book_title').value;
+                const newTitle = capitalizeFirstLetter(titleInput.value);
 
-                const newAuthor = document.getElementById('book_author').value;
+                const newAuthor = capitalizeFirstLetter(authorInput.value);
 
-                const newPages = document.getElementById('book_pages').value;
+                const newPages = pagesInput.value;
 
-                const newYear = document.getElementById('book_year').value;
+                const newYear = yearInput.value;
 
-
-                const newRead = document.getElementById('book_read').checked;
+                const newRead = readInput.checked;
 
                 //call to check for duplicates
                 verifyBook (newTitle, newAuthor, newPages, newYear, newRead);
 
                 //removes form after submit
                 formContainer.remove();
-                
+            }    
             })
     
     formContainer.appendChild(newBookForm);
@@ -164,7 +221,7 @@ class Book {
     }
 }
 
-// //sample book
+//sample book
 verifyBook ('The Hobbit', 'J.R.R. Tolkien', 950, 1933, true);
 
 verifyBook ('Neuromancer', 'William Gibson', 350, 1984, true);
@@ -206,7 +263,7 @@ function verifyBook(title, author, pages, year, read){
             const newCard = document.createElement('div');
                 newCard.classList.add('newCard');
                 newCard.setAttribute('data-id', book.id)
-                con1.appendChild(newCard);
+                cardsContainer.appendChild(newCard);
 
                 const bookTitle = document.createElement('div');
                 bookTitle.classList.add('bookTitle');
@@ -216,29 +273,38 @@ function verifyBook(title, author, pages, year, read){
                 //author
                 const bookAuthor = document.createElement('div');
                 bookAuthor.classList.add('bookAuthor');
-                bookAuthor.textContent = book.author;
-                bookTitle.appendChild(bookAuthor);
+                bookAuthor.textContent = "Book author: ";
+                newCard.appendChild(bookAuthor);
+                const authorName = document.createElement('div');
+                authorName.classList = 'authorName';
+                authorName.textContent = book.author;
+                newCard.appendChild(authorName);
 
                 //pages
                 const bookPages = document.createElement('div');
                 bookPages.classList.add('bookPages');
                 bookPages.textContent = book.pages;
-                bookAuthor.appendChild(bookPages);
+                if(book.pages === '') {
+                    bookPages.textContent = 'n/a'
+                };
+                
+                newCard.appendChild(bookPages);
 
                 //year
                 const bookYear = document.createElement('div');
                 bookYear.classList.add('bookYear');
                 bookYear.textContent = book.year ;
-                bookPages.appendChild(bookYear);
+                newCard.appendChild(bookYear);
 
                 //Read status checkbox label
                 const readDiv = document.createElement('div');
-                bookYear.appendChild(readDiv);
+                readDiv.classList = 'readDiv';
+                newCard.appendChild(readDiv);
 
                 const readLabel = document.createElement('label');
                 readLabel.setAttribute('for', 'read_label');
                 readLabel.textContent='Read?';
-                readDiv.appendChild(readLabel);
+                
 
                 //Read status checkbox input
                 const bookRead = document.createElement('input');
@@ -255,7 +321,9 @@ function verifyBook(title, author, pages, year, read){
                     
                 })
 
+                readDiv.appendChild(readLabel);
                 readLabel.appendChild(bookRead);
+                
                 
                 //remove button
                 const removeButton = document.createElement('button');
@@ -287,7 +355,7 @@ function verifyBook(title, author, pages, year, read){
                 });
 
 
-                readDiv.appendChild(removeButton)
+                newCard.appendChild(removeButton)
                 
 
 
